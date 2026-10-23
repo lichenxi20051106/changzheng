@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>星星之火，可以燎原——长征路上的关键抉择</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231d2b3a'/%3E%3Cpath d='M32 8c-6 10-12 15-12 26a12 12 0 0 0 24 0c0-8-5-12-8-18-1 4-2 6-4 8 1-7-1-12 0-16z' fill='%23a5281b'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;600;700;900&display=swap">
+<style>
+/* ===== 色板：冷底墨蓝 + 朱红暖点 ===== */
+:root{
+  --ink:#1d2b3a; --slate:#4a6572; --mist:#d8d3c7;
+  --red:#a5281b; --ember:#e07b39; --lamp:#f0b35e;
+  --glass:rgba(29,43,58,.62); --line:rgba(216,211,199,.18);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#0e1620;color:var(--mist);
+  font-family:"Noto Serif SC",serif;overflow:hidden}
+img{display:block;max-width:100%}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.view{position:fixed;inset:0;opacity:0;visibility:hidden;transition:opacity .9s ease,visibility .9s;overflow:hidden}
+.view.active{opacity:1;visibility:visible}
+
+/* ===== 幕一 封面 ===== */
+#cover{overflow:hidden}
+#cover .layer{position:absolute;inset:0;background-size:cover;background-position:center;will-change:transform}
+#cover .far{background-image:url("assets/01-封面-星火红丝带.png");filter:brightness(1.02) saturate(1)}
+#cover .veil{position:absolute;inset:0;background:radial-gradient(circle at 50% 120%,rgba(165,40,27,.18),transparent 55%);pointer-events:none}
+#cover .flash{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;
+  background:radial-gradient(circle 340px at var(--mx,50%) var(--my,50%),rgba(240,179,94,.22),rgba(216,211,199,.06) 45%,transparent 70%)}
+.cover-title{position:absolute;right:7%;top:26%;transform:none;text-align:right;z-index:6;width:48%}
+.cover-title h1{font-family:"Ma Shan Zheng",cursive;font-weight:400;
+  font-size:clamp(2.4rem,6vw,4.8rem);color:#3a2418;letter-spacing:.06em;
+  text-shadow:0 1px 0 rgba(244,238,224,.7)}
+.cover-title .sub{margin-top:1.1rem;font-size:clamp(.95rem,2vw,1.35rem);color:var(--red);letter-spacing:.28em}
+.hint{position:absolute;right:2.2rem;bottom:2.2rem;font-size:.85rem;letter-spacing:.2em;color:rgba(58,36,24,.65);z-index:7}
+
+/* ===== 幕二 地图 ===== */
+#map{background:#101a24}
+#map .mapbg{position:absolute;inset:0;background-image:url("assets/02-地图底图-山河长卷.png");
+  background-size:cover;background-position:center;filter:saturate(.85) brightness(.92)}
+#map .node-dot{position:absolute;transform:translate(-50%,-50%);cursor:pointer;z-index:9}
+#map .node-dot .pulse{display:block;width:14px;height:14px;border-radius:50%;background:var(--c);
+  box-shadow:0 0 10px var(--c);border:2px solid rgba(14,22,32,.6)}
+#map .node-dot:hover .pulse{transform:scale(1.4)}
+#map .node-dot .lbl{position:absolute;left:18px;top:50%;transform:translateY(-50%);white-space:nowrap;
+  font-size:13px;color:#f3e9d6;background:rgba(14,22,32,.55);padding:2px 8px;border-radius:2px;opacity:0;transition:opacity .2s}
+#map .node-dot:hover .lbl{opacity:1}
+#map svg.route{position:absolute;inset:0;width:100%;height:100%}
+.node{cursor:pointer}
+.node circle{transition:all .25s}
+.node .tag{font-family:"Noto Serif SC",serif;font-size:13px;fill:var(--mist);opacity:0;transition:opacity .25s}
+.node:hover .tag{opacity:1}
+.legend{position:absolute;top:1.4rem;right:1.4rem;z-index:9;display:flex;flex-direction:column;gap:.5rem}
+.legend button{padding:.5rem .9rem;border:1px solid var(--line);border-radius:2px;background:var(--glass);
+  backdrop-filter:blur(8px);font-size:.9rem;letter-spacing:.08em;color:var(--mist);text-align:left}
+.legend button.on{border-color:var(--red);color:#f3e9d6;background:rgba(165,40,27,.25)}
+.map-title{position:absolute;top:1.6rem;left:2rem;z-index:9}
+.map-title h2{font-family:"Ma Shan Zheng",cursive;font-weight:400;font-size:2rem;color:#f3e9d6}
+.map-title p{font-size:.9rem;color:rgba(216,211,199,.7);margin-top:.3rem;letter-spacing:.1em}
+/* 抉择卡（幕二/幕三共用毛玻璃） */
+.card{position:absolute;z-index:12;right:1.6rem;top:50%;transform:translateY(-50%) translateX(30px);
+  width:min(400px,92%);max-height:82vh;overflow:auto;padding:1.6rem 1.6rem 1.4rem;
+  background:var(--glass);backdrop-filter:blur(14px);border:1px solid var(--line);
+  opacity:0;pointer-events:none;transition:all .45s ease}
+.card.open{opacity:1;pointer-events:auto;transform:translateY(-50%) translateX(0)}
+.card h3{font-size:1.25rem;color:var(--lamp);margin-bottom:.2rem}
+.card .when{font-size:.82rem;color:rgba(216,211,199,.65);margin-bottom:1rem;letter-spacing:.05em}
+.card .hook{font-style:italic;color:#e8d9b8;margin-bottom:1rem;font-size:.98rem}
+.card .blk{margin-bottom:.9rem}
+.card .blk b{display:block;font-size:.82rem;color:var(--ember);letter-spacing:.12em;margin-bottom:.25rem}
+.card .blk p{font-size:.92rem;line-height:1.85;color:rgba(232,228,218,.92)}
+.card .weight{border-top:1px solid var(--line);padding-top:.9rem;font-size:.95rem;color:#f0d9a8;line-height:1.8}
+.mini-btn{display:block;margin-top:1rem;padding:.6rem .9rem;border:1px solid var(--ember);color:var(--lamp);
+  font-size:.9rem;border-radius:2px;background:rgba(224,123,57,.12)}
+.mini-btn.answered{background:rgba(224,123,57,.28)}
+.note{margin-top:.7rem;font-size:.9rem;line-height:1.8;color:#e8d9b8;padding:.8rem;border-left:2px solid var(--ember)}
+.card .close{position:absolute;top:.8rem;right:1rem;font-size:1.3rem;color:rgba(216,211,199,.7)}
+#mapNext{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);z-index:10;
+  padding:.8rem 2rem;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(8px);
+  letter-spacing:.25em;font-size:.95rem;color:var(--mist);border-radius:2px}
+#mapNext:hover{border-color:var(--red);color:#f3e9d6}
+.shade{position:absolute;inset:0;background:rgba(10,16,22,.55);opacity:0;pointer-events:none;transition:opacity .4s;z-index:8}
+#map.dim .shade{opacity:1}
+/* ===== 像素碎裂转场 ===== */
+#shatter{position:fixed;inset:0;z-index:60;display:none;pointer-events:none}
+/* ===== 幕三 第一人称步行 ===== */
+#walk{overflow-y:auto;overflow-x:hidden;background:#0e1620}
+#walk .stage{position:sticky;top:0;height:100vh;overflow:hidden}
+.wbg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.1s ease;filter:saturate(.95)}
+.wbg.on{opacity:1}
+#walk .bob{position:absolute;inset:0;will-change:transform}
+.walk-vignette{position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,22,32,.35),transparent 30%,transparent 62%,rgba(14,22,32,.7));pointer-events:none}
+/* 右侧时间轴 */
+.timeline{position:fixed;right:2.2rem;top:50%;transform:translateY(-50%);z-index:14;display:flex;flex-direction:column;gap:1.1rem;max-height:86vh}
+.tl-dot{width:11px;height:11px;border-radius:50%;background:rgba(216,211,199,.25);border:1px solid rgba(216,211,199,.4);position:relative;transition:all .3s}
+.tl-dot.meet{background:var(--lamp);box-shadow:0 0 10px rgba(240,179,94,.6)}
+.tl-dot.now{transform:scale(1.7);background:#ffd98a;box-shadow:0 0 16px rgba(240,179,94,.9)}
+.tl-dot small{position:absolute;right:1.6rem;top:50%;transform:translateY(-50%);font-size:.78rem;color:rgba(216,211,199,.6);white-space:nowrap;opacity:0;transition:opacity .3s}
+.tl-dot.now small{opacity:1}
+.tl-line{position:fixed;right:2.2rem;top:12%;bottom:12%;width:1px;background:rgba(216,211,199,.15);z-index:13}
+.tl-fill{position:absolute;left:0;top:0;width:100%;background:linear-gradient(var(--red),var(--ember));height:0}
+#walk .card{left:6%;right:auto;top:50%;bottom:auto;transform:translateY(-50%) translateX(-30px);width:min(400px,88%);max-height:78vh}
+#walk .card.open{transform:translateY(-50%) translateX(0)}
+.walk-caption{display:none}
+.walk-caption .date{display:block;font-size:.8rem;color:var(--lamp);margin-bottom:.3rem;letter-spacing:.2em}
+/* 彩蛋 */
+.easter{position:absolute;cursor:pointer;z-index:11;opacity:.85}
+.easter:hover{filter:brightness(1.3)}
+/* ===== 幕四 收束 ===== */
+#finale{background:#0b1219;overflow-y:auto}
+#finale .fbg{position:fixed;inset:0;background-image:url("assets/28-幕四-星火树万家灯火.png");background-size:cover;background-position:center;opacity:.55}
+.fwrap{position:relative;z-index:5;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8vh 6vw;text-align:center}
+.fwrap h2{font-family:"Ma Shan Zheng",cursive;font-weight:400;font-size:clamp(2rem,5vw,3.6rem);color:#f3e9d6;margin-bottom:2.4rem}
+.echo{display:flex;gap:clamp(1.5rem,6vw,5rem);align-items:baseline;justify-content:center;flex-wrap:wrap;margin-bottom:2.6rem}
+.echo .num{font-size:clamp(1.8rem,4.5vw,3rem);color:var(--lamp);font-weight:700}
+.echo .lab{font-size:.95rem;color:rgba(216,211,199,.7);margin-top:.4rem}
+.echo .arrow{color:var(--ember);font-size:1.8rem}
+.echo-line{font-style:italic;color:#e8d9b8;font-size:1.15rem;margin-bottom:3rem}
+.choice{display:flex;flex-direction:column;gap:.9rem;max-width:560px;width:100%;margin-bottom:3rem}
+.choice button{padding:1rem 1.3rem;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(8px);text-align:left;font-size:1rem;line-height:1.7;color:var(--mist);border-radius:2px}
+.choice button:hover{border-color:var(--red)}
+.choice button.answered{border-color:var(--ember);color:#f0d9a8}
+.choice-reply{min-height:2.4rem;font-style:italic;color:var(--lamp);font-size:1.05rem}
+.final-lines{max-width:1180px;line-height:2.2;font-size:1.05rem;color:rgba(232,228,218,.92);margin-bottom:3rem}
+.final-lines p{opacity:0;transform:translateY(12px);transition:all 1s}
+.final-lines p.show{opacity:1;transform:none}
+.final-lines .big{font-family:"Ma Shan Zheng",cursive;font-size:2rem;color:#f3e9d6}
+.sign{font-size:.85rem;color:rgba(216,211,199,.55);letter-spacing:.15em}
+.sources{max-width:640px;width:100%;margin-top:3rem;padding-top:1.6rem;border-top:1px solid var(--line);
+  text-align:left;font-size:.82rem;line-height:1.9;color:rgba(216,211,199,.72)}
+.sources b{display:block;color:var(--lamp);letter-spacing:.2em;margin-bottom:.7rem;font-size:.85rem}
+.sources p{margin-bottom:.35rem}
+.sources .note{color:rgba(216,211,199,.5);font-style:italic;margin-top:.6rem}
+@media (max-width:640px){
+  .cover-title{right:auto;left:6%;top:15%;width:88%;text-align:left}
+  .cover-title h1{font-size:2.3rem}
+  .cover-title .sub{letter-spacing:.16em}
+  .hint{font-size:13px;right:1rem;bottom:1.4rem;color:rgba(58,36,24,.6)}
+  .timeline{right:1rem}
+  .tl-line{right:1rem}
+  #walk .card{left:4%;right:auto;width:76%;max-height:68vh}
+  .legend{top:1rem;right:1rem;gap:.35rem}
+  .legend button{font-size:.8rem;padding:.45rem .7rem}
+  .map-title{left:1.2rem;top:1.2rem}
+}
+</style>
+
+</head>
+<body>
+<!-- ===== 幕一 封面 ===== -->
+<section id="cover" class="view active">
+  <div class="layer far" data-depth="0.02"></div>
+  <div class="veil"></div>
+  <div class="flash" id="flash"></div>
+  <div class="cover-title">
+    <h1>星星之火，可以燎原</h1>
+    <div class="sub">—— 长征路上的关键抉择 ——</div>
+  </div>
+  <div class="hint">移动鼠标点亮夜色 · 向下滚动走入山河</div>
+</section>
+
+<!-- ===== 幕二 地图 ===== -->
+<section id="map" class="view">
+  <div class="mapbg"></div>
+  <div class="shade"></div>
+  <svg class="route" viewBox="0 0 1000 620" preserveAspectRatio="xMidYMid slice">
+    <path id="routePath" d="" fill="none" stroke="#a5281b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="1" style="filter:drop-shadow(0 0 6px rgba(165,40,27,.7))"/>
+    <g id="nodeG"></g>
+  </svg>
+  <div class="map-title"><h2>丝带山河</h2><p>点击光点，读一次岔路口的抉择</p></div>
+  <div class="legend">
+    <button data-line="all" class="on">全部抉择与行军</button>
+    <button data-line="dir">方向线 · 往哪里走</button>
+    <button data-line="lead">领导线 · 谁来指挥</button>
+    <button data-line="life">生命线 · 怎么活下去</button>
+  </div>
+  <aside class="card" id="mapCard"></aside>
+  <button id="mapNext">碎裂前行 ↓</button>
+</section>
+<!-- ===== 幕三 第一人称步行 ===== -->
+<section id="walk" class="view">
+  <div class="stage">
+    <div class="wbg on" style="background-image:url('assets/03-第一人称-于都深秋夜渡.png')"></div>
+    <div class="wbg" style="background-image:url('assets/04-第一人称-湘江血战夜.png')"></div>
+    <div class="wbg" style="background-image:url('assets/05-第一人称-通道书院夜灯.png')"></div>
+    <div class="wbg" style="background-image:url('assets/11-第一人称-黎平冬街夜灯.png')"></div>
+    <div class="wbg" style="background-image:url('assets/12-第一人称-猴场跨年夜灯.png')"></div>
+    <div class="wbg" style="background-image:url('assets/13-第一人称-突破乌江.png')"></div>
+    <div class="wbg" style="background-image:url('assets/06-第一人称-遵义会议夜.png')"></div>
+    <div class="wbg" style="background-image:url('assets/14-第一人称-一渡赤水晨雾.png')"></div>
+    <div class="wbg" style="background-image:url('assets/15-第一人称-扎西残雪整编.png')"></div>
+    <div class="wbg" style="background-image:url('assets/16-第一人称-二渡赤水浅滩.png')"></div>
+    <div class="wbg" style="background-image:url('assets/17-第一人称-娄山关残雪雄关.png')"></div>
+    <div class="wbg" style="background-image:url('assets/07-第一人称-苟坝马灯夜路.png')"></div>
+    <div class="wbg" style="background-image:url('assets/18-第一人称-三渡赤水傍晚.png')"></div>
+    <div class="wbg" style="background-image:url('assets/19-第一人称-四渡赤水夜渡.png')"></div>
+    <div class="wbg" style="background-image:url('assets/08-第一人称-巧渡金沙江.png')"></div>
+    <div class="wbg" style="background-image:url('assets/20-第一人称-会理晴日会议.png')"></div>
+    <div class="wbg" style="background-image:url('assets/21-第一人称-彝海结盟.png')"></div>
+    <div class="wbg" style="background-image:url('assets/22-第一人称-安顺场强渡大渡河.png')"></div>
+    <div class="wbg" style="background-image:url('assets/09-第一人称-飞夺泸定桥.png')"></div>
+    <div class="wbg" style="background-image:url('assets/23-第一人称-两河口雪山脚.png')"></div>
+    <div class="wbg" style="background-image:url('assets/24-第一人称-俄界秋林.png')"></div>
+    <div class="wbg" style="background-image:url('assets/25-第一人称-腊子口天险.png')"></div>
+    <div class="wbg" style="background-image:url('assets/26-第一人称-哈达铺秋阳读报.png')"></div>
+    <div class="wbg" style="background-image:url('assets/10-第一人称-吴起镇黄昏到达.png')"></div>
+    <div class="wbg" style="background-image:url('assets/27-第一人称-直罗镇初冬伏击.png')"></div>
+    <div class="bob" id="bob"></div>
+    <div class="walk-vignette"></div>
+    <div class="walk-caption" id="cap"></div>
+    <aside class="card" id="walkCard"></aside>
+    <div class="tl-line"><div class="tl-fill" id="tlFill"></div></div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+  <div style="height:2500vh" id="track"></div>
+</section>
+
+<!-- ===== 幕四 收束 ===== -->
+<section id="finale" class="view">
+  <div class="fbg"></div>
+  <div class="fwrap">
+    <h2>火种递到你手里</h2>
+    <div class="echo">
+      <div><div class="num" data-echo="8.6万">0</div><div class="lab">出发 · 于都</div></div>
+      <div class="arrow">→</div>
+      <div><div class="num" data-echo="3万余">0</div><div class="lab">湘江之后</div></div>
+      <div class="arrow">→</div>
+      <div><div class="num" data-echo="数千人">0</div><div class="lab">抵达陕北</div></div>
+    </div>
+    <p class="echo-line">“活下来的不是人数，是方向。”</p>
+    <div class="choice" id="choice">
+      <button data-r="队伍里都随大流时，开口说出不同意见，从来都不容易。当年会议室里，也有人选择先把话讲完。">大家都随大流时，你要不要说出不同意见？</button>
+      <button data-r="更难但更对的那条路，往往走得慢。他们选的，正是这样一条。">一条更难但更对的路，你走不走？</button>
+      <button data-r="迈出第一步不需要准备好，先动起来，火才传得下去。">看到该做的事，你会不会先迈出一步？</button>
+    </div>
+    <p class="choice-reply" id="choiceReply"></p>
+    <div class="final-lines" id="finalLines">
+      <p>他们不知道二万五千里，只知道下一步往哪走。</p>
+      <p>火不是一开始就大的，是有人在黑夜里，一次又一次把它接住、护好、往前传。</p>
+      <p class="big">星星之火，可以燎原。</p>
+    </div>
+    <p class="sign">献给每一个在自己时代的岔路口，选择向前的人。</p>
+    <div class="sources">
+      <b>资料来源</b>
+      <p>会议时间、地点与决议要点：中央党史和文献研究院官网《长征途中中共中央召开过哪些重要会议》、《中国共产党历史》第一卷；遵义会议以中央档案馆藏《中共中央关于反对敌人五次“围剿”的总结的决议》《遵义政治局扩大会议传达提纲》两份原始档案为准。</p>
+      <p>出发 8.6 万余人、湘江战役后锐减至 3 万余人：中央党史和文献研究院《中央红军被迫长征》《红军长征湘江战役研究报告及史料选编》、人民网党史频道《湘江突围：长征中最为惨烈的战役》。</p>
+      <p>遵义会议改组中央领导、取消原三人团：中央党史和文献研究院官网、中国共产党新闻网党史频道。</p>
+      <p>苟坝会议放弃进攻打鼓新场、成立由毛泽东、周恩来、王稼祥组成的新三人团：中央党史和文献研究院官网、中国共产党新闻网。</p>
+      <p>彝海结盟（1935.5.22 刘伯承与果基首领小叶丹歃血为盟）：中央党史和文献研究院《彝海结盟 辉耀史册》、人民网党史频道、中国军网。</p>
+      <p>哈达铺读报定方向、榜罗镇会议确定陕北落脚点、10.19 抵达吴起镇：中央党史和文献研究院《红一方面军长征到达陕北》《中央红军长征落脚点的七次变化》。</p>
+      <p>六盘山《清平乐·六盘山》：《毛泽东诗词选》，并参中央党史和文献研究院、人民网党史频道相关考释。</p>
+      <p class="note">注：到达陕北确切人数、长征作战总次数等数字各史料记载不一，正文只采用学界通行的约数，不作精确断言。</p>
+    </div>
+  </div>
+</section>
+<canvas id="shatter"></canvas>
+<script>
+/* ===== 数据：11 抉择点五段式 + 行军简卡（文案取自策划案） ===== */
+const MEETS=[
+ {id:1,name:"通道转兵",when:"1934.12.12 · 湖南通道恭城书院",line:"dir",x:660,y:235,
+  hook:"原定的路走不通了，第一次掉头。",
+  a:["当时的岔路口","按原定计划，红军应北上湘西，与红二、红六军团会合；但国民党军已在湘西布下重兵口袋，继续北上等于往虎口撞。"],
+  b:["争论","多数人仍想执行原计划北上会合；紧急会议上，毛泽东等提出放弃北上、改向敌人力量薄弱的贵州。"],
+  c:["拍板","12月12日紧急会议后，红军在通道境内改变行军路线，分两路转兵西进贵州，向黎平挺进。"],
+  d:["代价与执行","这是一次“应急转弯”，还不是正式决议，方向要靠接下来的会议坐实。"],
+  e:"长征路上第一次违背既定方针、就地掉头——保存有生力量的第一步，从此开始。"},
+ {id:2,name:"黎平会议",when:"1934.12.18 · 贵州黎平翘街",line:"dir",x:610,y:255,
+  hook:"从“临时绕一下”变成“正式换个方向”。",
+  a:["当时的岔路口","通道转兵只是应急，“要不要继续北上湘西”仍悬而未决。"],
+  b:["争论","是回到北上湘西的老路，还是正式向川黔边发展？"],
+  c:["拍板","通过《中央政治局关于战略方针之决定》，放弃“北上湘西与红二、六军团会合”，确定新根据地应在川黔边、最初以遵义为中心。"],
+  d:["代价与执行","红军继续向贵州西北前进，为占领遵义铺开道路。"],
+  e:"通道是“转弯”，黎平是“定方向”——第一次以政治局决议形式正式改变战略方针。"},
+ {id:3,name:"猴场会议",when:"1934.12.31晚—1935.1.1 · 贵州瓮安猴场",line:"lead",x:585,y:275,
+  hook:"跨年夜，先把“谁说了算”的规矩改了。",
+  a:["当时的岔路口","博古、李德的军事专断，是此前反复碰壁的制度性原因；只改方向不改指挥权，还会再走错。"],
+  b:["争论","作战方针该不该由少数人独断，还是必须经过政治局讨论？"],
+  c:["拍板","作出《关于渡江后新的行动方针的决定》，规定作战方针及时间地点选择，军委必须在政治局会议上作报告——限制了博古、李德的军事专断权。"],
+  d:["代价与执行","会后中央红军渡过乌江。"],
+  e:"被称为“遵义会议的前夜”——先把决策规则改过来，为随后的改组铺好路。"},
+ {id:4,name:"遵义会议",when:"1935.1.15–17 · 贵州遵义",line:"lead",x:555,y:305,
+  hook:"生死关头，换了指挥的人。",
+  a:["当时的岔路口","第五次反“围剿”以来的军事错误，导致红军被迫长征、湘江惨重损失；继续旧指挥，队伍有全军覆没之险。"],
+  b:["争论","总结第五次反“围剿”教训，改组中央领导机构，是会议核心议题。"],
+  c:["拍板","增选毛泽东为中央政治局常委；取消长征前成立的“三人团”；委托张闻天起草《中共中央关于反对敌人五次“围剿”的总结的决议》；军事指挥仍由朱德、周恩来负责，周恩来为下最后决心者。"],
+  d:["代价与执行","会后北进，预定夺取土城、赤水，准备在泸州—宜宾间北渡长江（这一计划随后因敌情调整）。"],
+  e:"在最危急关头挽救了党、挽救了红军，事实上开始确立毛泽东在党中央和红军的领导地位，是党的历史上生死攸关的转折点。"},
+ {id:5,name:"扎西会议",when:"1935.2.3–9 · 云南扎西（威信）",line:"lead",x:520,y:320,
+  hook:"把遵义的决定，真正交到每个人手里。",
+  a:["当时的岔路口","遵义会议开了，但决议尚未向全军传达，领导权的交接也没完成；一渡赤水后川滇敌军南北逼近，北渡长江暂缓。"],
+  b:["争论/议题","如何落实遵义决议、谁负中央总责、下一步往哪走？"],
+  c:["拍板","决定由张闻天代替博古负中央总的责任；以毛泽东为周恩来在军事指挥上的帮助者；通过遵义会议决议并向全军传达。"],
+  d:["代价与执行","会后东返，2月18—21日二渡赤水，回师黔北。"],
+  e:"遵义会议的“交权”与“落地”在此完成，路线从此转成反攻姿态。"},
+ {id:6,name:"苟坝会议",when:"1935.3.10–12 · 贵州苟坝",line:"lead",x:560,y:312,
+  hook:"一盏马灯的深夜，拦住了一场不该打的仗。",
+  a:["当时的岔路口","遵义战役大捷后，多数人主张进攻固守的打鼓新场再打一仗；毛泽东判断敌人已集结、固守之仗不能打。"],
+  b:["争论","“打”与“不打”激烈争论，会议一度撤销了毛泽东的相关职务；深夜，他提一盏马灯沿田埂小路去找周恩来，把利害再讲一遍。"],
+  c:["拍板","3月11日说服与会者，撤销进攻打鼓新场计划；3月12日成立由毛泽东、周恩来、王稼祥组成的新“三人团”，全权指挥军事。"],
+  d:["代价与执行","此后三渡、四渡赤水、南渡乌江，都由这个小指挥圈果断机动完成。"],
+  e:"遵义会议改组任务由此进一步落实，毛泽东事实上成为最高军事指挥者——“真理小道”上那盏马灯，是集体决策纠正个人判断的象征。"},
+ {id:7,name:"会理会议",when:"1935.5.12 · 四川会理",line:"lead",x:485,y:415,
+  hook:"打完最难的机动，先把认识统一起来。",
+  a:["当时的岔路口","四渡赤水高度机动、往返奔波，部队内部对“为什么这样绕”出现非议；巧渡金沙江后，需要停下来统一认识。"],
+  b:["议题","总结遵义会议以来的战略行动，维护新“三人团”的军事指挥权威。"],
+  c:["拍板/结果","统一对遵义会议以来战略行动的认识，继续北上抢渡大渡河。"],
+  d:["代价与执行","—"],
+  e:"抉择之后还要巩固共识——这是“领导线”上一次内部团结的校准。"},
+ {id:8,name:"两河口会议",when:"1935.6.26 · 四川懋功以北两河口",line:"dir",x:395,y:385,
+  hook:"北上还是南下，方向之争摆上桌面。",
+  a:["当时的岔路口","一、四方面军会师后，“北上建立川陕甘根据地”与另一种南下主张形成对立。"],
+  b:["争论","战略方向是北上还是南下。"],
+  c:["拍板","一致同意周恩来、毛泽东等多数人关于北上的意见，确定红军北上、建立川陕甘根据地的战略方针。"],
+  d:["代价与执行","—"],
+  e:"在路线分歧面前明确“北上抗日”方向，为后来与分裂危险作斗争定下基调。"},
+ {id:9,name:"俄界会议",when:"1935.9.12 · 甘肃迭部高吉村（俄界）",line:"dir",x:330,y:300,
+  hook:"分裂关头，单独也要北上。",
+  a:["当时的岔路口","9月10日中央率红三军、军委纵队先行北上，11日晚抵俄界与红一军会合；面临分裂危险，方向不能动摇。"],
+  b:["争论/议题","分裂风险面前，政治路线往哪走、部队如何整编。"],
+  c:["拍板","作出《中共中央关于张国焘同志的错误的决定》，确定继续北上抗日的政治路线；将红一军、红三军、军委纵队编为陕甘支队，继续北上。"],
+  d:["代价与执行","9月16日抵达腊子口，打开北上通道。"],
+  e:"在分裂风险面前坚持原则、单独成行，保住了北上抗日的主干。"},
+ {id:10,name:"哈达铺·榜罗镇",when:"1935.9.20 / 9.27 · 甘肃",line:"dir",x:360,y:265,
+  hook:"一张旧报纸，找到了家。",
+  a:["当时的岔路口","长征走了快一年，“到底在哪里落脚”一直没有最终答案。"],
+  b:["经过","9月20日哈达铺会议整编陕甘支队；毛泽东从当地找到的报纸上得知陕北有刘志丹、徐海东的红军和根据地存在，提出“到陕北去”；9月27日榜罗镇常委会议正式把落脚点放在陕北。"],
+  c:["拍板","以陕北作为领导中国革命的大本营。"],
+  d:["代价与执行","—"],
+  e:"从“一路寻找”到“安家落户”，长征有了明确终点，西北成为中国革命的大本营。"},
+ {id:11,name:"吴起镇·直罗镇",when:"1935.10.19 / 11.20–26 · 陕北",line:"dir",x:300,y:220,
+  hook:"走到了，还要把根扎下。",
+  a:["经过","10月19日中央红军到达吴起镇，长征宣告胜利结束；10月21日“切尾巴”战斗斩断尾追之敌，不把敌人带进苏区；11月直罗镇战役打破对陕甘苏区的“围剿”。"],
+  b:["抉择","到达不是终点，还要在陕北扎下根据地。"],
+  c:["拍板","以陕甘苏区为大本营继续发展。"],
+  d:["代价与执行","直罗镇一战，打破敌人“围剿”。"],
+  e:"直罗镇战役为把全国革命大本营放在西北“举行了一个奠基礼”——前10次抉择的成果，在这里落地生根。"}
+];
+const BATTLES=[
+ {name:"于都出发",when:"1934.10.17–20 · 江西于都八渡口",line:"life",x:760,y:250,t:"8.6万余人从这里夜渡出发，没有人知道一年后会走到哪里。"},
+ {name:"湘江战役",when:"1934.11.27–12.1 · 湘江两岸",line:"life",x:720,y:210,t:"血战五昼夜，红军由出发时8.6万余人锐减至3万余人——惨重代价，逼出了后来的一次次转弯。"},
+ {name:"突破乌江",when:"1935.1.2–6",line:"life",x:560,y:290,t:"把追剿军甩在乌江东、南，1月7日占领遵义。"},
+ {name:"一渡赤水",when:"1935.1.29 · 土城/元厚",line:"life",x:545,y:285,t:"敌情变化下暂缓北渡长江，转入扎西整编。"},
+ {name:"二渡赤水",when:"1935.2.18–21 · 太平渡/二郎滩",line:"life",x:555,y:300,t:"回师黔北，准备打回遵义。"},
+ {name:"娄山关·遵义战役",when:"1935.2.25–28",line:"life",x:565,y:300,t:"长征以来最大一次胜利，歼敌两个师又八个团。"},
+ {name:"三渡赤水",when:"1935.3.16晚–17 · 茅台",line:"life",x:545,y:315,t:"西渡入川南，诱敌向西集中。"},
+ {name:"四渡赤水",when:"1935.3.21夜–22 · 二郎滩—林滩",line:"life",x:565,y:305,t:"秘密折向东，3月31日南渡乌江，把数十万敌军甩在江北。"},
+ {name:"巧渡金沙江",when:"1935.5.3–9 · 皎平渡",line:"life",x:470,y:395,t:"主力全部渡江，彻底摆脱围追堵截。"},
+ {name:"彝海结盟",when:"1935.5.22 · 冕宁",line:"life",x:460,y:400,t:"刘伯承与彝族果基家支头人小叶丹歃血为盟，红军顺利通过彝族区——“借路”也是一种抉择。"},
+ {name:"强渡大渡河",when:"1935.5.25 · 安顺场",line:"life",x:430,y:415,t:"红一团渡河成功，但大部队难速过，决策改夺泸定桥。"},
+ {name:"飞夺泸定桥",when:"1935.5.29",line:"life",x:410,y:405,t:"铁索上夺桥，打开北上道路；6月2日主力全部通过。"},
+ {name:"腊子口战斗",when:"1935.9.16–17",line:"life",x:345,y:290,t:"攻克天险，打通北上陕甘通道。"}
+];
+const ALL=[...MEETS,...BATTLES];
+/* ===== 视图切换 ===== */
+const views=[...document.querySelectorAll('.view')];
+function showView(id){views.forEach(v=>v.classList.toggle('active',v.id===id));
+  if(id==='walk'){document.getElementById('walk').scrollTop=0;setTimeout(walkTick,60);}
+  if(id==='map'){setTimeout(growRoute,300);}
+  if(id==='finale'){setTimeout(()=>{animateEcho();
+    [...document.querySelectorAll('#finalLines p')].forEach((p,i)=>setTimeout(()=>p.classList.add('show'),600+i*900));},200);}
+  if(history.replaceState)history.replaceState(null,'','#'+id);}
+/* ===== 幕一：手电 + 视差 + 右侧滑入转场 ===== */
+const cover=document.getElementById('cover'),flash=document.getElementById('flash');
+let mx=innerWidth/2,my=innerHeight/2,tx=mx,ty=my;
+cover.addEventListener('mousemove',e=>{
+  tx=e.clientX;ty=e.clientY;
+  const far=cover.querySelector('.far');
+  far.style.transform=`translate(${(e.clientX/innerWidth-.5)*-9}px,${(e.clientY/innerHeight-.5)*-6}px)`;
+  cover.classList.add('lit');
+});
+function enterMap(){if(!cover.classList.contains('leaving')){cover.classList.add('leaving');showView('map');}}
+cover.addEventListener('wheel',e=>{if(e.deltaY>0)enterMap();},{passive:true});
+cover.addEventListener('touchmove',e=>{const t=e.touches[0];tx=t.clientX;ty=t.clientY;cover.classList.add('lit');
+  if(t.clientY<innerHeight*0.2)enterMap();});
+function ease(){mx+=(tx-mx)*.08;my+=(ty-my)*.08;
+  flash.style.setProperty('--mx',mx+'px');flash.style.setProperty('--my',my+'px');
+  requestAnimationFrame(ease);}ease();
+/* ===== 幕二：地图丝带生长 + 节点 + 图例 + 卡片 ===== */
+const routePts=[[760,250],[720,210],[660,235],[610,255],[585,275],[560,290],[555,305],[545,285],[520,320],[555,300],[565,300],[560,312],[545,315],[565,305],[470,395],[485,415],[460,400],[430,415],[410,405],[395,385],[330,300],[345,290],[360,265],[300,220],[315,205]];
+document.getElementById('routePath').setAttribute('d',routePts.map((p,i)=>i?'L'+p[0]+' '+p[1]:'M'+p[0]+' '+p[1]).join(' '));
+const routePath=document.getElementById('routePath');
+function growRoute(){routePath.style.opacity=1;}
+function cardHTML(m){
+  if(m.a&&m.b&&m.c){
+    const blocks=[m.a,m.b,m.c,m.d,m.f].filter(x=>Array.isArray(x))
+      .map(b=>`<div class="blk"><b>${b[0]}</b><p>${b[1]}</p></div>`).join('');
+    return `<button class="close" aria-label="关闭">×</button><h3>${m.name}</h3><div class="when">${m.when}</div>
+    <p class="hook">${m.hook}</p>${blocks}
+    <div class="weight">历史分量 · ${m.e}</div>`;
+  }
+  return `<button class="close" aria-label="关闭">×</button><h3>${m.name}</h3><div class="when">${m.when}</div><div class="weight">${m.t}</div>`;
+}
+function openCard(el,m){
+  const box=el==='map'?document.getElementById('mapCard'):document.getElementById('walkCard');
+  box.innerHTML=cardHTML(m);box.classList.add('open');
+  const cbtn=box.querySelector('.close');
+  if(el==='walk'){if(cbtn)cbtn.remove();}
+  else{cbtn.onclick=()=>box.classList.remove('open');}
+  if(m.id===6){const b=document.createElement('button');b.className='mini-btn';b.textContent='点亮那盏马灯 · 真理小道';
+    const note=document.createElement('div');note.className='note';note.style.display='none';
+    note.innerHTML='深夜田埂上，一盏马灯，两个剪影把“打不打”再讲一遍——集体决策拦住了个人判断的偏差。';
+    b.onclick=()=>{note.style.display=note.style.display==='none'?'block':'none';b.classList.toggle('answered');};
+    box.appendChild(b);box.appendChild(note);}
+  if(m.id===10){const b=document.createElement('button');b.className='mini-btn';b.textContent='展开地上那张旧报纸';
+    const note=document.createElement('div');note.className='note';note.style.display='none';
+    note.innerHTML='报纸上登着：陕北有刘志丹、徐海东的红军和根据地。“到陕北去”，由此写进决议。';
+    b.onclick=()=>{note.style.display=note.style.display==='none'?'block':'none';b.classList.toggle('answered');};
+    box.appendChild(b);box.appendChild(note);}
+}
+const nodeLayer=document.createElement('div');
+nodeLayer.style.cssText='position:absolute;inset:0;z-index:9';
+document.getElementById('map').appendChild(nodeLayer);
+ALL.forEach(n=>{
+  const d=document.createElement('div');
+  d.className='node-dot';d.dataset.line=n.line;
+  d.style.left=(n.x/10)+'%';d.style.top=(n.y/6.2)+'%';
+  const meet=!!n.a;
+  d.innerHTML=`<span class="pulse"></span><span class="lbl">${n.name}</span>`;
+  d.style.setProperty('--c',meet?'#f0b35e':'#9fb6c2');
+  d.addEventListener('mouseenter',()=>document.getElementById('map').classList.add('dim'));
+  d.addEventListener('mouseleave',()=>document.getElementById('map').classList.remove('dim'));
+  d.addEventListener('click',()=>openCard('map',n));
+  nodeLayer.appendChild(d);
+});
+document.querySelectorAll('.legend button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.legend button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+  const f=b.dataset.line;
+  document.querySelectorAll('.node-dot').forEach(n=>{
+    n.style.opacity=(f==='all'||n.dataset.line===f)?1:.14;
+  });
+}));
+document.getElementById('mapNext').addEventListener('click',shatterThenWalk);
+
+/* ===== 像素碎裂转场 ===== */
+function shatterThenWalk(){
+  const cv=document.getElementById('shatter'),ctx=cv.getContext('2d');
+  cv.width=innerWidth;cv.height=innerHeight;cv.style.display='block';
+  const s=10,cx=innerWidth/2,cy=innerHeight/2,cols=Math.ceil(innerWidth/s),rows=Math.ceil(innerHeight/s),tiles=[];
+  for(let i=0;i<cols*rows;i++){
+    const x=(i%cols)*s,y=Math.floor(i/cols)*s;
+    const vx=x+s/2-cx,vy=y+s/2-cy,len=Math.hypot(vx,vy)||1;
+    tiles.push({x,y,ux:vx/len,uy:vy/len,delay:len/(Math.hypot(cx,cy))*0.35});
+  }
+  let t0=performance.now();
+  function frame(now){
+    const p=(now-t0)/950;ctx.clearRect(0,0,cv.width,cv.height);
+    tiles.forEach(t=>{
+      const q=Math.min(1,Math.max(0,(p-t.delay)/(1-t.delay)));
+      const e=1-Math.pow(1-q,3),dist=e*340;
+      ctx.globalAlpha=1-q;
+      ctx.fillStyle='#1d2b3a';
+      ctx.fillRect(t.x+t.ux*dist,t.y+t.uy*dist,s-1.5,s-1.5);
+    });
+    if(p<1)requestAnimationFrame(frame);else{cv.style.display='none';showView('walk');}
+  }requestAnimationFrame(frame);
+}
+
+/* ===== 幕三：滚动步行 + 时间轴 + 场景切换 ===== */
+const WALK=[
+ {d:"1934.10.17–20",t:"于都 · 夜渡出发",meet:null,
+  name:"于都出发",when:"1934.10.17–20 · 江西于都八渡口",
+  hook:"8.6万余人趁夜过河，没有人知道一年后走到哪里。",
+  a:["经过","中央红军趁夜从于都八渡口架浮桥、乘木船渡过贡水，告别中央苏区；岸边老乡提灯相送，队伍没有回程。"],
+  b:["为什么关键","这是长征的起点，也是后面所有抉择的坐标系——从这里出发时，没有人规定终点在哪里。"],
+  c:["代价与数字","出发时8.6万余人；夜色、单衣，只带了几天干粮。"],
+  f:["延续","所有后来的转弯，都从这一夜的河面开始。"],
+  e:"出发本身不是抉择，但它给之后每一次岔路口提供了人数与方向的参照系。"},
+ {d:"1934.11.27–12.1",t:"湘江 · 血战五昼夜",meet:null,
+  name:"湘江战役",when:"1934.11.27–12.1 · 新圩 / 脚山铺 / 光华铺",
+  hook:"五昼夜死守，用最惨重的代价证明旧路走不通。",
+  a:["经过","为掩护中央纵队过江，红军在新圩、脚山铺、光华铺沿江阵地死守五昼夜，炮火与江水混在一起。"],
+  b:["为什么关键","惨重代价直接证明旧指挥路线走不通，逼出通道、黎平一次次掉头——没有湘江的痛，就没有后来的会议。"],
+  c:["代价与数字","由出发时8.6万余人锐减至3万余人，是长征中减员最惨重的一战。"],
+  f:["延续","血的教训成为通道转兵最直接的理由。"],
+  e:"生命线的第一道刻度：活下来，比带多少人走更重要。"},
+ {d:"1934.12.12",t:"通道 · 第一次掉头",meet:1},
+ {d:"1934.12.18",t:"黎平 · 正式定方向",meet:2},
+ {d:"1934.12.31",t:"猴场 · 跨年夜改规矩",meet:3},
+ {d:"1935.1.2–6",t:"突破乌江",meet:null,
+  name:"突破乌江",when:"1935.1.2–6 · 回龙场 / 江界河 / 茶山关",
+  hook:"天险一过，敌人的包围圈合拢失败。",
+  a:["经过","红军分三路强渡激流寒江，把追剿军甩在乌江以东、以南，1月7日占领遵义。"],
+  b:["为什么关键","过河之后敌人围不住了，红军第一次得到一个能停下来开会、整顿自己的安全空隙。"],
+  c:["代价与数字","昼间强渡，船桨浸在冷水里；为遵义会议争得时间窗口。"],
+  f:["延续","有了空隙，才有遵义会议那张桌子。"],
+  e:"生死之间，先要有一块能坐下来争论的地方。"},
+ {d:"1935.1.15",t:"遵义 · 生死转折点",meet:4,egg:"身后有人回头，笑了一下，又转回去赶路。"},
+ {d:"1935.1.29",t:"一渡赤水",meet:null,
+  name:"一渡赤水",when:"1935.1.29 · 土城 / 元厚",
+  hook:"计划被现实推翻，走不通就换路。",
+  a:["经过","土城战斗遇敌情变化，原定在泸州—宜宾间北渡长江已无可能，红军西渡赤水进入川南。"],
+  b:["为什么关键","硬按原计划北渡只会钻进包围，暂缓过江、转入扎西整编，机动求生从此开始。"],
+  c:["代价与数字","北渡长江计划暂缓，部队缩编轻装。"],
+  f:["延续","才有了扎西交权落地与回师黔北。"],
+  e:"计划是死的，队伍是活的——被现实推翻的计划，不值得坚持。"},
+ {d:"1935.2.3",t:"扎西 · 交权与落地",meet:5},
+ {d:"1935.2.18–21",t:"二渡赤水 · 回师黔北",meet:null,
+  name:"二渡赤水",when:"1935.2.18–21 · 太平渡 / 二郎滩",
+  hook:"敌人以为我们西进，我们杀个回马枪。",
+  a:["经过","扎西整编后红军突然东返，从太平渡、二郎滩二次渡过赤水，回师黔北。"],
+  b:["为什么关键","机动开始牵着敌人走，而不是被敌人追着跑；主动权第一次回到红军手里。"],
+  c:["代价与数字","轻装回渡，泥水没到小腿。"],
+  f:["延续","直接接上娄山关与遵义战役。"],
+  e:"最好的防御不是挡住追兵，而是让追兵猜错方向。"},
+ {d:"1935.2.25",t:"娄山关 · 雄关漫道真如铁",meet:null,
+  name:"娄山关 · 遵义战役",when:"1935.2.25–28 · 娄山关 / 遵义",
+  hook:"长征以来最大一次胜利，证明新指挥能打胜。",
+  a:["经过","攻克天险娄山关，再占遵义，一周内连打胜仗。"],
+  b:["为什么关键","胜利稳住了刚成立的新指挥权威，让队伍相信换了路子是对的。"],
+  c:["代价与数字","歼敌两个师又八个团；风卷残雪中登顶雄关。"],
+  f:["延续","“雄关漫道真如铁”写在这一战之后。"],
+  e:"一次胜仗不只是数字，更是对新方向的投票。"},
+ {d:"1935.3.10",t:"苟坝 · 马灯深夜",meet:6,egg:"那盏马灯可以点开：灯影里两个剪影沿小路把话说完。"},
+ {d:"1935.3.16",t:"三渡赤水 · 诱敌向西",meet:null,
+  name:"三渡赤水",when:"1935.3.16晚–17 · 茅台",
+  hook:"西渡是佯动，目的是把敌人引向西边。",
+  a:["经过","西渡赤水进入川南，摆出北渡长江姿态，诱使敌军向川南集中。"],
+  b:["为什么关键","一着引敌向西的棋，真正目的是在敌人合围前从缝隙里折向东。"],
+  c:["代价与数字","高度机动、往返奔波，部队内部也曾因“为什么这样绕”出现非议。"],
+  f:["延续","非议在会理会议上被统一认识。"],
+  e:"看不懂的绕路，往往是为了下一步直插空档。"},
+ {d:"1935.3.21",t:"四渡赤水 · 夜渡东返",meet:null,
+  name:"四渡赤水",when:"1935.3.21夜–22 · 二郎滩—林滩",
+  hook:"秘密夜渡，把数十万敌军甩在江北。",
+  a:["经过","秘密折向东夜渡，3月31日南渡乌江，直逼贵阳。"],
+  b:["为什么关键","把数十万围追堵截的敌军甩在江北，是长征中最出色的机动战，“走”本身成了最有力的武器。"],
+  c:["代价与数字","全程声东击西，靠速度与保密求生。"],
+  f:["延续","机动成果在金沙江收果。"],
+  e:"打得赢就打，打不赢就走——走，也是一种胜利。"},
+ {d:"1935.5.3",t:"巧渡金沙江",meet:null,
+  name:"巧渡金沙江",when:"1935.5.3–9 · 皎平渡",
+  hook:"七条小船，七天七夜，跳出包围圈。",
+  a:["经过","靠七条小船在皎平渡七天七夜把主力全部送过金沙江。"],
+  b:["为什么关键","过江之后彻底摆脱围追堵截，跳出几十万敌军的包围圈，四渡赤水的机动在此收果。"],
+  c:["代价与数字","初夏干热河谷、浊浪烈日，靠船工日夜不停。"],
+  f:["延续","北上通道打开，接上会理会议统一认识。"],
+  e:"机动不是兜圈子，是为了在决定性时刻过河。"},
+ {d:"1935.5.12",t:"会理 · 统一认识",meet:7},
+ {d:"1935.5.22",t:"彝海结盟",meet:null,
+  name:"彝海结盟",when:"1935.5.22 · 四川冕宁彝海",
+  hook:"硬闯不如结盟，借路也是一种抉择。",
+  a:["经过","刘伯承与彝族果基家支头人小叶丹在海子边歃血为盟、结为兄弟，红军顺利通过彝族区。"],
+  b:["为什么关键","强闯民族区只会多树敌，团结比强攻走得更远，这是“生命线”上的借路智慧。"],
+  c:["代价与数字","一碗鸡血酒，换得整个彝族区的通行。"],
+  f:["延续","为抢渡大渡河赢得宝贵时间。"],
+  e:"往前走不只是战斗，也包括把路人变成同行者。"},
+ {d:"1935.5.25",t:"强渡大渡河 · 安顺场",meet:null,
+  name:"强渡大渡河",when:"1935.5.25 · 安顺场",
+  hook:"一团人过去了，大部队过不去，立刻改道。",
+  a:["经过","红一团在安顺场强渡成功，但渡口船少、水流急，大部队无法迅速过江。"],
+  b:["为什么关键","渡过一团人不等于全军过河，决策随即改为奔袭泸定桥——根据现实立刻调整路线。"],
+  c:["代价与数字","峡谷急流，一昼夜急奔的伏笔在此埋下。"],
+  f:["延续","直接导向飞夺泸定桥。"],
+  e:"局部成功不能掩盖全局困境，该改道时就改道。"},
+ {d:"1935.5.29",t:"飞夺泸定桥",meet:null,egg:"铁索上，前面的人回了一下头。",
+  name:"飞夺泸定桥",when:"1935.5.29 · 大渡河泸定桥",
+  hook:"一昼夜奔袭二百四十里，铁索上夺桥。",
+  a:["经过","先头部队一昼夜奔袭二百四十里，在铁索上攀夺桥梁，6月2日主力全部通过。"],
+  b:["为什么关键","打开北上通道，避免重蹈石达开在大渡河覆灭的结局，速度换来了生路。"],
+  c:["代价与数字","铁索寒光下，拿命铺出一条路。"],
+  f:["延续","过河后接两河口会师。"],
+  e:"生命线走到这里，靠的是比敌人快一步。"},
+ {d:"1935.6.26",t:"两河口 · 北上之争",meet:8},
+ {d:"1935.9.12",t:"俄界 · 单独北上",meet:9},
+ {d:"1935.9.16",t:"腊子口 · 打开天险",meet:null,
+  name:"腊子口战斗",when:"1935.9.16–17 · 岷山腊子口",
+  hook:"最后一道险关，从峭壁侧攀迂回突破。",
+  a:["经过","攻克岷山天险腊子口，从峭壁侧面迂回攀援，突破隘口。"],
+  b:["为什么关键","天险一破，北上陕甘的通道打开，俄界会议“单独北上”的路线由此落地。"],
+  c:["代价与数字","战斗昼夜，攀崖而上。"],
+  f:["延续","过了便是甘南，直抵哈达铺。"],
+  e:"最难的关往往是门，翻过去就是另一片平地。"},
+ {d:"1935.9.20",t:"哈达铺 · 一张旧报纸",meet:10,egg:"地上那张旧报纸可点开：陕北有红军。"},
+ {d:"1935.10.19",t:"吴起镇 · 到达",meet:11,egg:"村口，最后一个背影回头笑了笑。"},
+ {d:"1935.11.20",t:"直罗镇 · 奠基礼",meet:null,
+  name:"直罗镇战役",when:"1935.11.20–26 · 陕西直罗镇",
+  hook:"到了不算完，站住脚才算落地。",
+  a:["经过","初冬在直罗镇设伏，全歼来犯敌军一个师。"],
+  b:["为什么关键","打破对陕甘苏区的“围剿”，为把全国革命大本营放在西北“举行奠基礼”。"],
+  c:["代价与数字","陕北初冬薄霜，河谷设伏。"],
+  f:["延续","前10次抉择的成果在此落地生根。"],
+  e:"到达不是终点，把根扎下才算赢。"}
+];
+const wbg=[...document.querySelectorAll('#walk .wbg')];
+const tl=document.getElementById('timeline'),tlFill=document.getElementById('tlFill'),cap=document.getElementById('cap');
+WALK.forEach((n,i)=>{const dot=document.createElement('div');dot.className='tl-dot'+(n.meet?' meet':'');
+  dot.innerHTML=`<small>${n.d} ${n.t}</small>`;dot.addEventListener('click',()=>{
+    const w=document.getElementById('walk');w.scrollTop=(i/(WALK.length-1))*(w.scrollHeight-innerHeight);});
+  tl.appendChild(dot);});
+let cur=-1,lastScroll=0;
+function walkTick(){
+  const w=document.getElementById('walk');
+  const max=w.scrollHeight-innerHeight,prog=max>0?w.scrollTop/max:0;
+  const idx=Math.min(WALK.length-1,Math.round(prog*(WALK.length-1)));
+  tlFill.style.height=(prog*100)+'%';
+  if(idx!==cur){cur=idx;
+    wbg.forEach((b,i)=>b.classList.toggle('on',i===idx));
+    [...tl.children].forEach((d,i)=>d.classList.toggle('now',i===idx));
+    const n=WALK[idx];
+    const box=document.getElementById('walkCard');
+    const oldE=box.querySelector('.egg-note');if(oldE)oldE.remove();
+    if(n.meet){openCard('walk',MEETS.find(m=>m.id===n.meet));}
+    else openCard('walk',n);
+    if(n.egg){const e=document.createElement('div');e.className='note egg-note';
+      e.style.marginTop='.9rem';e.textContent='途中彩蛋 · '+n.egg;box.appendChild(e);}
+  }
+  /* 走路起伏：滚动速度驱动轻微上下颠簸 */
+  const v=Math.min(18,Math.abs(w.scrollTop-lastScroll));lastScroll=w.scrollTop;
+  const bob=Math.sin(prog*Math.PI*WALK.length*2)*3+v*.3;
+  document.getElementById('bob').style.transform=`translateY(${bob}px) scale(1.03)`;
+  if(prog>0.985)setTimeout(()=>showView('finale'),800);
+}
+document.getElementById('walk').addEventListener('scroll',walkTick,{passive:true});
+
+/* ===== 幕四：星火树收集 + 数字回声 + 三问 + 终章 ===== */
+function animateEcho(){document.querySelectorAll('.echo .num').forEach(el=>{
+  const target=el.dataset.echo;let n=0;const step=target.includes('万')?0.2:1;
+  const iv=setInterval(()=>{n+=step;const txt=target.includes('万')?(n.toFixed(1)+'万'):(n>=3?'3万余':Math.round(n));
+    el.textContent=txt;if(n>=3){clearInterval(iv);el.textContent=target;}},60);});}
+document.querySelectorAll('#choice button').forEach(b=>b.addEventListener('click',()=>{
+  b.classList.add('answered');document.getElementById('choiceReply').textContent=b.dataset.r;}));
+const flObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){animateEcho();
+  [...document.querySelectorAll('#finalLines p')].forEach((p,i)=>setTimeout(()=>p.classList.add('show'),800+i*900));}}),{threshold:.3});
+flObs.observe(document.querySelector('.fwrap'));
+</script>
+</body>
+</html>
